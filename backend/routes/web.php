@@ -27,6 +27,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/', 'Book\BookController@book')->name('book');
-Route::post('/books', 'Book\BookController@post')->name('book_post');
+Route::post('/Books', 'Book\BookController@post')->name('book_post');
 
-Route::delete('/book/{book}','Book\BookController@delete')->name('book_delete');
+Route::delete('/Books/{book}','Book\BookController@delete')->name('book_delete');
+
+Route::get('/Books/edit/{book}','Book\BookController@edit')->name('book_edit');
+Route::post('/Books/update','Book\BookController@update')->name('book_update');

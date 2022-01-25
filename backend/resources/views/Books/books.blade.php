@@ -6,17 +6,33 @@
     </div>
 </div>
 @include('common.errors')
-<form action="{{ url('/books') }}" method="POST"
+<form action="{{ url('/Books') }}" method="POST"
     class="form-horizontal">
     @csrf
-    <div class="form-group">
-        <div class="col-sm-6">
-            <input type="text" name="item_name"
-                value="{{ old('item_name') }}" class="form-group">
+    <div class="form-row pl-5">
+        <div class="form-group col-md-6">
+            <label for="book" class="col-sm-3 control-label">BOOK</label>
+                <input type="text" name="item_name"
+                    value="{{ old('item_name') }}" class="form-control w-50">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="price" class="col-sm-3 control-label">金額</label>
+                <input type="text" name="item_amount"
+                    value="{{ old('item_amount') }}" class="form-control w-50">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="number" class="col-sm-3 control-label">数</label>
+                <input type="text" name="item_number"
+                    value="{{ old('item_number') }}" class="form-control w-50">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="published" class="col-sm-3 control-label">年月日</label>
+                <input type="date" name="published"
+                    value="{{ old('published') }}" class="form-control w-50">
         </div>
     </div>
     <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-6">
+        <div class="col-sm-offset-3 col-sm-6 pl-5">
             <button type="submit" class="btn btn-primary">
                 save
             </button>
@@ -40,7 +56,15 @@
                                 </div>
                             </td>
                             <td>
-                                <form action="{{ url('book/'.$book->id) }}" method="POST">
+                                <a href="{{ url('Books/edit/'.$book->id) }}" method="GET">
+                                @csrf
+                                    <button type="submit" class="btn btn-primary">
+                                        更新
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <form action="{{ url('Books/'.$book->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                     <button type="submit" class="btn btn-danger">

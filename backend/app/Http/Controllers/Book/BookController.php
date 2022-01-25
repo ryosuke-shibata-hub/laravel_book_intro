@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Model\Book;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 
 class BookController extends Controller
@@ -24,7 +25,10 @@ class BookController extends Controller
     {
         # code...
         $validator = Validator::make($request->all(),[
-            'item_name'=>'required|max:255',
+            'item_name' => 'required|max:255|min:3',
+            'item_number' => 'required|min:1|max:99|numeric',
+            'item_amount' => 'required|max:99999|numeric',
+            'published' => 'required|date',
         ]);
 
         if($validator->fails()) {
@@ -35,10 +39,50 @@ class BookController extends Controller
 
         $books = new Book();
         $books->item_name = $request->item_name;
-        $books->item_number = '1';
-        $books->item_amount = '1000';
-        $books->published = '2022-01-22';
+        $books->item_number = $request->item_number;
+        $books->item_amount = $request->item_amount;
+        $books->published = $request->published;
         $books->save();
+
+        return redirect('/');
+    }
+
+    public function edit($id)
+    {
+        # code...
+        $book = Book::find($id);
+
+        return view('Books.edit')
+        ->with('book',$book);
+    }
+
+    public function update(Request $request)
+    {
+        # code...
+        $validator = validator::make($request->all(), [
+            'id' => 'required',
+            'item_name' => 'required|max:255|min:3',
+            'item_number' => 'required|min:1|max:99|numeric',
+            'item_amount' => 'required|max:99999|numeric',
+            'published' => 'required|date',
+        ]);
+
+         if($validator->fails()) {
+            return redirect('/')
+            ->withInput()
+            ->withErrors($validator);
+        }
+
+        $item = [
+            'item_name' => $request->item_name,
+            'item_number' => $request->item_number,
+            'item_amount' => $request->item_amount,
+            'published' => $request->published,
+        ];
+
+        DB::table('books')
+        ->where('id',$request->id)
+        ->update($item);
 
         return redirect('/');
     }
