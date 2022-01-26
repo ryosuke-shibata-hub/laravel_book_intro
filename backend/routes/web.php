@@ -26,10 +26,10 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::get('/', 'Book\BookController@book')->name('book');
-Route::post('/Books', 'Book\BookController@post')->name('book_post');
-
-Route::delete('/Books/{book}','Book\BookController@delete')->name('book_delete');
+Route::get('/', 'Book\BookController@index')->name('book');
+Route::post('/Books', 'Book\BookController@store')->name('book_post');
 
 Route::get('/Books/edit/{book}','Book\BookController@edit')->name('book_edit');
 Route::post('/Books/update','Book\BookController@update')->name('book_update');
+
+Route::delete('/Books/{book}','Book\BookController@destroy')->name('book_delete');

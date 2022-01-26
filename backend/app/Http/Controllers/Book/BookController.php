@@ -12,16 +12,16 @@ use Illuminate\Support\Facades\DB;
 class BookController extends Controller
 {
     //
-    public function book(Request $request) {
+    public function index(Request $request) {
 
-         $books = Book::orderBy('created_at','asc')
-         ->get();
+         $books = Book::orderBy('created_at','desc')
+         ->paginate(3);
 
         return view('Books.books')
         ->with('books',$books);
     }
 
-    public function post(Request $request)
+    public function store(Request $request)
     {
         # code...
         $validator = Validator::make($request->all(),[
@@ -44,7 +44,8 @@ class BookController extends Controller
         $books->published = $request->published;
         $books->save();
 
-        return redirect('/');
+        return redirect('/')
+        ->with('message','本の登録が完了しました。');
     }
 
     public function edit($id)
@@ -73,6 +74,14 @@ class BookController extends Controller
             ->withErrors($validator);
         }
 
+        // $books = Book::find($request->id);
+        // $books->item_name = $request->item_name;
+        // $books->item_number = $request->item_number;
+        // $books->item_amount = $request->item_amount;
+        // $books->published = $request->published;
+        // $books->save();
+        // return redirect('/');
+
         $item = [
             'item_name' => $request->item_name,
             'item_number' => $request->item_number,
@@ -87,7 +96,7 @@ class BookController extends Controller
         return redirect('/');
     }
 
-    public function delete(Book $book)
+    public function destroy(Book $book)
     {
         # code...
         $book->delete();
