@@ -4,7 +4,7 @@
 <div class="row container pl-5">
     <div class="col-md-12 pl-5">
         @include('common.errors')
-        <form action="{{ url('/Books/update') }}" method="POST"
+        <form enctype="multipart/form-data" action="{{ url('/Books/update') }}" method="POST"
         class="form-horizontal">
         @csrf
         <input type="hidden" value="{{ $book->id }}" name="id">
@@ -28,7 +28,10 @@
             <input type="datetime" name="published"
                 value="{{ $book->published }}" class="form-control">
         </div>
-
+        <div class="col-sm-6">
+        <label>画像</label>
+        <input type="file" name="item_img">
+        </div>
         <div class="well well-sm">
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="/" class="btn btn-link pull-right">Back</a>

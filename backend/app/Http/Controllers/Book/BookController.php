@@ -7,15 +7,24 @@ use Illuminate\Http\Request;
 use App\Http\Model\Book;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class BookController extends Controller
 {
     //
+    public function __construct()
+    {
+        # code...
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
 
-         $books = Book::orderBy('created_at','desc')
-         ->paginate(3);
+        $books = Book::where('user_id',Auth::user()->id)
+        ->orderBy('created_at','desc')
+        ->paginate(3);
+
 
         return view('Books.books')
         ->with('books',$books);
@@ -29,6 +38,7 @@ class BookController extends Controller
             'item_number' => 'required|min:1|max:99|numeric',
             'item_amount' => 'required|max:99999|numeric',
             'published' => 'required|date',
+            'item_img' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -37,21 +47,32 @@ class BookController extends Controller
             ->withErrors($validator);
         }
 
+        $file = $request->file('item_img');
+        if(!empty($file)) {
+            $fileName = $file->getClientOriginalName();
+            $move = $file->move('./upload/',$fileName);
+        }else {
+            $fileName ="";
+        }
+
         $books = new Book();
+        $books->user_id = Auth::user()->id;
         $books->item_name = $request->item_name;
         $books->item_number = $request->item_number;
         $books->item_amount = $request->item_amount;
         $books->published = $request->published;
+        $books->item_img = $fileName;
         $books->save();
 
         return redirect('/')
         ->with('message','本の登録が完了しました。');
     }
 
-    public function edit($id)
+    public function edit($book_id)
     {
         # code...
-        $book = Book::find($id);
+        $book = Book::where('user_id',Auth::user()->id)
+        ->find($book_id);
 
         return view('Books.edit')
         ->with('book',$book);
@@ -66,6 +87,7 @@ class BookController extends Controller
             'item_number' => 'required|min:1|max:99|numeric',
             'item_amount' => 'required|max:99999|numeric',
             'published' => 'required|date',
+            'item_img' => 'required',
         ]);
 
          if($validator->fails()) {
@@ -74,7 +96,15 @@ class BookController extends Controller
             ->withErrors($validator);
         }
 
-        // $books = Book::find($request->id);
+         $file = $request->file('item_img');
+        if(!empty($file)) {
+            $fileName = $file->getClientOriginalName();
+            $move = $file->move('./upload/',$fileName);
+        }else {
+            $fileName ="";
+        }
+
+        // $books = Book::where('user_id',Auth::User()->id)find($request->id));
         // $books->item_name = $request->item_name;
         // $books->item_number = $request->item_number;
         // $books->item_amount = $request->item_amount;
@@ -83,10 +113,12 @@ class BookController extends Controller
         // return redirect('/');
 
         $item = [
+            'user_id' => Auth::user()->id,
             'item_name' => $request->item_name,
             'item_number' => $request->item_number,
             'item_amount' => $request->item_amount,
             'published' => $request->published,
+            'item_img' => $fileName,
         ];
 
         DB::table('books')

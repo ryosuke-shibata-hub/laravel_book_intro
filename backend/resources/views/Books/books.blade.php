@@ -11,7 +11,7 @@
     </div>
 @endif
 @include('common.errors')
-<form action="{{ url('/Books') }}" method="POST"
+<form enctype="multipart/form-data" action="{{ url('/Books') }}" method="POST"
     class="form-horizontal">
     @csrf
     <div class="form-row">
@@ -36,6 +36,10 @@
                     value="{{ old('published') }}" class="form-control">
         </div>
     </div>
+    <div class="col-sm-6">
+        <label>画像</label>
+        <input type="file" name="item_img">
+    </div>
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-6 pl-5">
             <button type="submit" class="btn btn-primary">
@@ -58,6 +62,9 @@
                             <td class="table-text">
                                 <div>
                                     {{ $book->item_name }}
+                                </div>
+                                <div>
+                                    <img src="upload/{{ $book->item_img }}" width="50">
                                 </div>
                             </td>
                             <td>
